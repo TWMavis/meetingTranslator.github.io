@@ -970,7 +970,8 @@
             scrollToBottom();
             const translation = await translateText(text);
             entry.target = translation;
-            el.querySelector('.target-text').innerHTML = escapeHtml(translation);
+            el.querySelector(".target-text").innerHTML = escapeHtml(translation);
+            scrollToBottom();
         }
         
         function showInterimEntry(text) {
