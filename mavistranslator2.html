@@ -29,15 +29,17 @@
             font-family: 'Noto Sans TC', 'Noto Sans JP', 'Inter', -apple-system, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            min-height: 100vh;
+            height: 100vh; /* 修正：確保 body 不會捲動 */
+            overflow: hidden; /* 修正：防止 body 出現捲動條 */
             line-height: 1.6;
         }
         .app-container {
             max-width: 900px;
             margin: 0 auto;
-            min-height: 100vh;
+            height: 100vh; /* 修正：強制應用程式與視窗同高 */
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
         header {
             background: var(--bg-card);
@@ -46,6 +48,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            flex-shrink: 0; /* 修正：防止 header 被壓縮 */
         }
         .header-content {
             display: flex;
@@ -262,17 +265,19 @@
             margin: 20px 0;
         }
         .transcript-container {
-            flex: 1;
+            flex: 1; /* 修正：這會讓對話區域佔滿剩餘空間 */
             padding: 24px;
-            overflow-y: auto;
+            overflow-y: auto; /* 修正：捲動發生在這裡 */
+            display: flex;
+            flex-direction: column;
         }
         .empty-state {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            min-height: 400px;
+            flex: 1; /* 修正：使其在容器內居中 */
+            min-height: 200px;
             color: var(--text-muted);
             text-align: center;
         }
@@ -294,7 +299,7 @@
         .transcript-list {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 12px; /* 修正：增加間距 */
         }
         .transcript-entry {
             background: var(--bg-card);
@@ -341,6 +346,7 @@
             padding-left: 12px;
             border-left: 2px solid var(--accent-blue-light);
             line-height: 1.7;
+            min-height: 1.5em;
         }
         .interim-text {
             color: var(--text-muted);
@@ -376,6 +382,7 @@
             padding: 20px 24px;
             position: sticky;
             bottom: 0;
+            flex-shrink: 0; /* 修正：防止控制列被壓縮 */
         }
         .control-content {
             display: flex;
@@ -508,6 +515,7 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             flex-wrap: wrap;
+            flex-shrink: 0; /* 修正：防止 stats-bar 被壓縮 */
         }
         .stat-item {
             display: flex;
@@ -720,15 +728,15 @@
                 uiLanguage: 'インターフェース言語', uiLanguageHint: 'ページの表示言語を変更',
                 sourceLanguage: '音声認識言語（話す言語）', targetLanguage: '翻訳先言語',
                 sentences: '文数', recordingTime: '録音時間', ready: '準備完了', recording: '録音中',
-                emptyTitle: '会議記録を開始する準備ができました', emptyHint: '下の「録音開始」ボタンをクリックして、リアルタイム翻訳を開始',
-                clear: 'クリア', export: 'エクスポート', startRecording: '録音開始', stopRecording: '録音停止',
-                translating: '翻訳中', recognizing: '認識中...', cleared: 'すべての記録をクリアしました',
-                exported: '記録をエクスポートしました', noContent: 'エクスポートする内容がありません',
-                confirmClear: 'すべての記録をクリアしますか？', micPermission: 'マイクの許可を与えてください',
+                emptyTitle: '會議記錄を開始する準備ができました', emptyHint: '下の「錄音開始」ボタンをクリックして、リアルタイム翻訳を開始',
+                clear: 'クリア', export: 'エクスポート', startRecording: '錄音開始', stopRecording: '錄音停止',
+                translating: '翻訳中', recognizing: '認識中...', cleared: 'すべての記錄をクリアしました',
+                exported: '記錄をエクスポートしました', noContent: 'エクスポートする内容がありません',
+                confirmClear: 'すべての記錄をクリアしますか？', micPermission: 'マイクの許可を与えてください',
                 notSupported: '音声認識非対応',
                 translationFailed: '（翻訳失敗）', translationError: '（翻訳サービスに接続できません）',
-                exportTitle: '会議翻訳記録', source: '原文', target: '翻訳',
-                silenceTimeout: '文区切り感度', silenceHint: '何秒間の無音で文を区切るか',
+                exportTitle: '會議翻訳記錄', source: '原文', target: '翻訳',
+                silenceTimeout: '文區切り感度', silenceHint: '何秒間の無音で文を區切るか',
                 fast: '速い（敏感）', slow: '遅い（安定）',
                 warningTitle: '⚠️ サーバー経由で開く必要があります',
                 warningText: '音声認識機能はHTTP/HTTPSサーバー経由でのみ動作します。',
@@ -847,7 +855,6 @@
         function getSpeechLang(code) { return langCodes[code]?.speech || code; }
         function getTranslateLang(code) { return langCodes[code]?.translate || code; }
 
-        // 自動斷句：當停頓超過設定時間，強制提交
         function resetSilenceTimer() {
             if (silenceTimer) clearTimeout(silenceTimer);
             if (pendingTranscript.trim()) {
@@ -888,7 +895,6 @@
             };
             
             recognition.onend = () => { 
-                // 結束時提交任何待處理的文字
                 if (pendingTranscript.trim() && isRecording) {
                     commitPendingTranscript();
                 }
@@ -912,22 +918,17 @@
                     }
                 }
                 
-                // 處理最終結果
                 if (finalTranscript.trim()) {
                     pendingTranscript += finalTranscript;
-                    
-                    // 檢查是否有句號、問號、驚嘆號等標點符號
                     const sentenceEnders = /[。？！.?!]/;
                     if (sentenceEnders.test(pendingTranscript)) {
                         commitPendingTranscript();
                     } else {
-                        // 沒有標點符號，啟動靜默計時器
                         resetSilenceTimer();
                         showInterimEntry(pendingTranscript);
                     }
                 }
                 
-                // 處理中間結果
                 if (interimTranscript.trim()) {
                     const displayText = pendingTranscript + interimTranscript;
                     showInterimEntry(displayText);
@@ -967,11 +968,12 @@
             transcriptList.appendChild(el);
             emptyState.style.display = 'none';
             updateStats();
-            scrollToBottom();
+            scrollToBottom(); // 修正：原文出現時先捲動
+
             const translation = await translateText(text);
             entry.target = translation;
-            el.querySelector(".target-text").innerHTML = escapeHtml(translation);
-            scrollToBottom();
+            el.querySelector('.target-text').innerHTML = escapeHtml(translation);
+            scrollToBottom(); // 修正：翻譯填入後再次捲動，防止高度改變導致沒到底
         }
         
         function showInterimEntry(text) {
@@ -1008,7 +1010,6 @@
         
         function stopRecording() {
             isRecording = false;
-            // 提交任何待處理的文字
             if (pendingTranscript.trim()) {
                 commitPendingTranscript();
             }
@@ -1059,7 +1060,14 @@
         }
         
         function updateStats() { sentenceCountEl.textContent = entryCount; }
-        function scrollToBottom() { $('transcriptContainer').scrollTop = $('transcriptContainer').scrollHeight; }
+        
+        function scrollToBottom() { 
+            const container = $('transcriptContainer');
+            // 修正：使用 requestAnimationFrame 確保 DOM 已渲染完畢才計算高度
+            requestAnimationFrame(() => {
+                container.scrollTop = container.scrollHeight;
+            });
+        }
         
         function clearAll() {
             if (entries.length === 0) return;
