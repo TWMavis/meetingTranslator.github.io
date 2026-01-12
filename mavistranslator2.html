@@ -29,14 +29,14 @@
             font-family: 'Noto Sans TC', 'Noto Sans JP', 'Inter', -apple-system, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            height: 100vh; /* 修正：確保 body 不會捲動 */
-            overflow: hidden; /* 修正：防止 body 出現捲動條 */
+            height: 100vh; 
+            overflow: hidden; 
             line-height: 1.6;
         }
         .app-container {
             max-width: 900px;
             margin: 0 auto;
-            height: 100vh; /* 修正：強制應用程式與視窗同高 */
+            height: 100vh; 
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -48,7 +48,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-shrink: 0; /* 修正：防止 header 被壓縮 */
+            flex-shrink: 0; 
         }
         .header-content {
             display: flex;
@@ -265,9 +265,9 @@
             margin: 20px 0;
         }
         .transcript-container {
-            flex: 1; /* 修正：這會讓對話區域佔滿剩餘空間 */
+            flex: 1; 
             padding: 24px;
-            overflow-y: auto; /* 修正：捲動發生在這裡 */
+            overflow-y: auto; 
             display: flex;
             flex-direction: column;
         }
@@ -276,7 +276,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex: 1; /* 修正：使其在容器內居中 */
+            flex: 1; 
             min-height: 200px;
             color: var(--text-muted);
             text-align: center;
@@ -299,7 +299,7 @@
         .transcript-list {
             display: flex;
             flex-direction: column;
-            gap: 12px; /* 修正：增加間距 */
+            gap: 12px; 
         }
         .transcript-entry {
             background: var(--bg-card);
@@ -313,7 +313,7 @@
             background: var(--bg-hover);
         }
         @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(-10px); } /* 改為從上方滑入 */
             to { opacity: 1; transform: translateY(0); }
         }
         .entry-header {
@@ -382,7 +382,7 @@
             padding: 20px 24px;
             position: sticky;
             bottom: 0;
-            flex-shrink: 0; /* 修正：防止控制列被壓縮 */
+            flex-shrink: 0; 
         }
         .control-content {
             display: flex;
@@ -515,7 +515,7 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
             flex-wrap: wrap;
-            flex-shrink: 0; /* 修正：防止 stats-bar 被壓縮 */
+            flex-shrink: 0; 
         }
         .stat-item {
             display: flex;
@@ -777,7 +777,7 @@
         let isRecording = false, recognition = null, entries = [], entryCount = 0;
         let recordingStartTime = null, recordingTimer = null, currentInterimEntry = null;
         let speechSupported = false;
-        let silenceTimeout = 800; // 預設 0.8 秒
+        let silenceTimeout = 800; 
         let silenceTimer = null;
         let pendingTranscript = '';
         
@@ -960,20 +960,23 @@
             entryCount++;
             const time = new Date().toLocaleTimeString(currentUILang, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             const entry = { id: entryCount, time, source: text, target: null };
-            entries.push(entry);
+            entries.unshift(entry); // 將數據加到陣列最前面
             const el = document.createElement('div');
             el.className = 'transcript-entry';
             el.id = 'entry-' + entry.id;
             el.innerHTML = '<div class="entry-header"><span class="entry-number">#' + entry.id + '</span><span class="entry-time">' + entry.time + '</span></div><div class="source-text">' + escapeHtml(entry.source) + '</div><div class="target-text"><span class="translating-indicator">' + t('translating') + '<span class="dot-loading"><span></span><span></span><span></span></span></span></div>';
-            transcriptList.appendChild(el);
+            
+            // 重要：使用 prepend 將新元素插入到最上面
+            transcriptList.prepend(el);
+            
             emptyState.style.display = 'none';
             updateStats();
-            scrollToBottom(); // 修正：原文出現時先捲動
+            scrollToTop(); // 捲動到最上面
 
             const translation = await translateText(text);
             entry.target = translation;
             el.querySelector('.target-text').innerHTML = escapeHtml(translation);
-            scrollToBottom(); // 修正：翻譯填入後再次捲動，防止高度改變導致沒到底
+            scrollToTop(); // 翻譯完成後再次確保在最上面
         }
         
         function showInterimEntry(text) {
@@ -982,11 +985,12 @@
                 currentInterimEntry.className = 'transcript-entry';
                 currentInterimEntry.style.borderLeftColor = 'var(--accent-blue)';
                 currentInterimEntry.style.opacity = '0.7';
-                transcriptList.appendChild(currentInterimEntry);
+                // 即時辨識也放在最上面
+                transcriptList.prepend(currentInterimEntry);
                 emptyState.style.display = 'none';
             }
             currentInterimEntry.innerHTML = '<div class="entry-header"><span class="entry-number">' + t('recognizing') + '</span></div><div class="source-text interim-text">' + escapeHtml(text) + '</div>';
-            scrollToBottom();
+            scrollToTop();
         }
         
         function removeInterimEntry() { 
@@ -1061,11 +1065,11 @@
         
         function updateStats() { sentenceCountEl.textContent = entryCount; }
         
-        function scrollToBottom() { 
+        // 修改為捲動到頂部
+        function scrollToTop() { 
             const container = $('transcriptContainer');
-            // 修正：使用 requestAnimationFrame 確保 DOM 已渲染完畢才計算高度
             requestAnimationFrame(() => {
-                container.scrollTop = container.scrollHeight;
+                container.scrollTop = 0;
             });
         }
         
@@ -1083,7 +1087,8 @@
         function exportTranscript() {
             if (entries.length === 0) { showToast(t('noContent')); return; }
             let content = t('exportTitle') + '\n================\n\n';
-            entries.forEach(e => { 
+            // 匯出時維持編號順序，所以需要將陣列反轉回來(或從 ID 小排到大)
+            [...entries].reverse().forEach(e => { 
                 content += '[' + e.time + '] #' + e.id + '\n' + t('source') + '：' + e.source + '\n' + t('target') + '：' + e.target + '\n\n'; 
             });
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
