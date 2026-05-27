@@ -1,0 +1,1187 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&family=Zen+Maru+Gothic:wght@400;500;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #f4ede1;
+    --paper-dark: #e8dcc4;
+    --sumi: #1a1612;
+    --sumi-soft: #3d352b;
+    --vermillion: #c8553d;
+    --vermillion-deep: #a8412e;
+    --matcha: #6b8e4e;
+    --matcha-deep: #4a6b35;
+    --gold: #b8924a;
+    --indigo: #2c4a6b;
+    --sakura: #d4a5a5;
+    --shadow: rgba(26, 22, 18, 0.12);
+  }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--paper);
+    color: var(--sumi);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(200, 85, 61, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(107, 142, 78, 0.04) 0%, transparent 40%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .app {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--sumi);
+    position: relative;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 60%;
+    height: 1px;
+    background: var(--sumi);
+  }
+
+  .title-block {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .stamp {
+    width: 56px;
+    height: 56px;
+    background: var(--vermillion);
+    color: var(--paper);
+    font-family: 'Shippori Mincho', serif;
+    font-weight: 700;
+    font-size: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 4px;
+    box-shadow: 1px 1px 0 var(--sumi);
+    transform: rotate(-3deg);
+    letter-spacing: -2px;
+  }
+
+  .title h1 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1.1;
+  }
+
+  .title .sub {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--sumi-soft);
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .nav {
+    display: flex;
+    gap: 4px;
+  }
+
+  .nav button {
+    background: transparent;
+    border: 1.5px solid var(--sumi);
+    padding: 10px 16px;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 14px;
+    cursor: pointer;
+    color: var(--sumi);
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .nav button:hover {
+    background: var(--sumi);
+    color: var(--paper);
+  }
+
+  .nav button.active {
+    background: var(--sumi);
+    color: var(--paper);
+  }
+
+  /* Stats bar */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-bottom: 28px;
+    background: var(--paper-dark);
+    border: 1.5px solid var(--sumi);
+  }
+
+  .stat {
+    padding: 14px 18px;
+    border-right: 1px solid var(--sumi);
+    position: relative;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat .label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--sumi-soft);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .stat .value {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--sumi);
+  }
+
+  .stat .value .small { font-size: 14px; color: var(--sumi-soft); }
+
+  /* Question card */
+  .card {
+    background: #fcfaf4;
+    border: 1.5px solid var(--sumi);
+    padding: 32px 36px;
+    position: relative;
+    box-shadow: 4px 4px 0 var(--sumi);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 8px; left: 8px; right: 8px; bottom: 8px;
+    border: 1px solid rgba(26, 22, 18, 0.15);
+    pointer-events: none;
+  }
+
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--sumi-soft);
+  }
+
+  .q-number {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--sumi-soft);
+  }
+
+  .q-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--matcha);
+    color: var(--paper);
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+
+  .q-tag.grammar { background: var(--indigo); }
+  .q-tag.vocab { background: var(--matcha); }
+  .q-tag.reading { background: var(--gold); }
+
+  .q-text {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 19px;
+    line-height: 1.9;
+    margin-bottom: 8px;
+    color: var(--sumi);
+  }
+
+  .q-text .blank {
+    display: inline-block;
+    min-width: 80px;
+    padding: 0 8px;
+    border-bottom: 2px solid var(--vermillion);
+    text-align: center;
+    color: var(--vermillion);
+    font-weight: 600;
+  }
+
+  .q-translate {
+    font-size: 12px;
+    color: var(--sumi-soft);
+    margin-top: 6px;
+    margin-bottom: 24px;
+    font-style: italic;
+    letter-spacing: 0.5px;
+  }
+
+  /* Options */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--paper);
+    border: 1.5px solid var(--sumi-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 16px;
+    color: var(--sumi);
+    text-align: left;
+    width: 100%;
+  }
+
+  .option:hover:not(:disabled) {
+    background: #fff;
+    border-color: var(--sumi);
+    transform: translateX(2px);
+  }
+
+  .option:disabled { cursor: default; }
+
+  .option .num {
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--sumi-soft);
+    display: grid;
+    place-items: center;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    flex-shrink: 0;
+    background: #fff;
+  }
+
+  .option.correct {
+    background: rgba(107, 142, 78, 0.15);
+    border-color: var(--matcha-deep);
+  }
+
+  .option.correct .num {
+    background: var(--matcha-deep);
+    color: var(--paper);
+    border-color: var(--matcha-deep);
+  }
+
+  .option.wrong {
+    background: rgba(200, 85, 61, 0.12);
+    border-color: var(--vermillion-deep);
+  }
+
+  .option.wrong .num {
+    background: var(--vermillion-deep);
+    color: var(--paper);
+    border-color: var(--vermillion-deep);
+  }
+
+  /* Explanation */
+  .explain {
+    margin-top: 24px;
+    padding: 22px 24px;
+    background: var(--paper-dark);
+    border-left: 4px solid var(--gold);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .explain h3 {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    color: var(--sumi);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .explain h3::before {
+    content: '解';
+    background: var(--gold);
+    color: var(--paper);
+    padding: 2px 8px;
+    font-size: 12px;
+  }
+
+  .explain.right h3::before {
+    content: '正';
+    background: var(--matcha-deep);
+  }
+
+  .explain.wrong h3::before {
+    content: '誤';
+    background: var(--vermillion-deep);
+  }
+
+  .explain p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--sumi-soft);
+    margin-bottom: 10px;
+  }
+
+  .explain .wrong-list {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--sumi-soft);
+  }
+
+  .explain .wrong-list .item {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--sumi-soft);
+    margin-bottom: 6px;
+  }
+
+  .explain .wrong-list .item strong {
+    color: var(--vermillion-deep);
+    font-family: 'Shippori Mincho', serif;
+    margin-right: 6px;
+  }
+
+  /* Actions */
+  .actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+
+  .btn {
+    padding: 12px 24px;
+    border: 1.5px solid var(--sumi);
+    background: var(--sumi);
+    color: var(--paper);
+    font-family: 'Shippori Mincho', serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn:hover {
+    background: var(--vermillion);
+    border-color: var(--vermillion);
+  }
+
+  .btn.ghost {
+    background: transparent;
+    color: var(--sumi);
+  }
+
+  .btn.ghost:hover {
+    background: var(--sumi);
+    color: var(--paper);
+  }
+
+  /* Review page */
+  .review-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--sumi-soft);
+  }
+
+  .review-empty .big {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 64px;
+    color: var(--paper-dark);
+    margin-bottom: 16px;
+  }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .review-item {
+    background: #fcfaf4;
+    border: 1.5px solid var(--sumi);
+    padding: 20px 24px;
+    position: relative;
+  }
+
+  .review-item .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .review-item .q {
+    font-family: 'Shippori Mincho', serif;
+    font-size: 16px;
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .review-item .ans {
+    font-size: 13px;
+    color: var(--sumi-soft);
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--sumi-soft);
+  }
+
+  .review-item .ans .y { color: var(--matcha-deep); font-weight: 600; }
+  .review-item .ans .n { color: var(--vermillion-deep); font-weight: 600; text-decoration: line-through; }
+
+  .review-item .count {
+    background: var(--vermillion);
+    color: var(--paper);
+    font-size: 11px;
+    padding: 3px 10px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .review-item .practice-btn {
+    margin-top: 12px;
+    background: transparent;
+    border: 1px solid var(--sumi);
+    color: var(--sumi);
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: 'Shippori Mincho', serif;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .review-item .practice-btn:hover {
+    background: var(--sumi);
+    color: var(--paper);
+  }
+
+  /* Filter */
+  .filter-bar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-bar button {
+    background: transparent;
+    border: 1px solid var(--sumi-soft);
+    padding: 6px 14px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--sumi-soft);
+    transition: all 0.2s;
+    font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 1px;
+  }
+
+  .filter-bar button.active,
+  .filter-bar button:hover {
+    background: var(--sumi);
+    color: var(--paper);
+    border-color: var(--sumi);
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--sumi);
+    color: var(--paper);
+    padding: 12px 24px;
+    font-family: 'Shippori Mincho', serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    z-index: 100;
+    animation: toastIn 0.3s ease-out;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translate(-50%, 20px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+
+  .loading {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--sumi-soft);
+    font-family: 'Shippori Mincho', serif;
+    letter-spacing: 3px;
+  }
+
+  /* Reset section */
+  .reset-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px dashed var(--sumi-soft);
+    text-align: center;
+  }
+
+  .reset-section button {
+    background: transparent;
+    border: none;
+    color: var(--sumi-soft);
+    font-size: 11px;
+    cursor: pointer;
+    letter-spacing: 2px;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 600px) {
+    .app { padding: 20px 16px 60px; }
+    .header { flex-direction: column; gap: 16px; align-items: stretch; }
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2) { border-right: none; }
+    .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid var(--sumi); }
+    .card { padding: 24px 20px; }
+    .q-text { font-size: 17px; }
+  }
+</style>
+
+<div class="app">
+  <div class="header">
+    <div class="title-block">
+      <div class="stamp">N3</div>
+      <div class="title">
+        <h1>日本語能力試験</h1>
+        <div class="sub">N3 Practice · 練習帳</div>
+      </div>
+    </div>
+    <div class="nav">
+      <button id="nav-practice" class="active" onclick="switchView('practice')">練習</button>
+      <button id="nav-review" onclick="switchView('review')">複習</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="label">Total</div><div class="value" id="stat-total">0</div></div>
+    <div class="stat"><div class="label">Correct</div><div class="value" id="stat-correct">0</div></div>
+    <div class="stat"><div class="label">Accuracy</div><div class="value" id="stat-acc">—<span class="small">%</span></div></div>
+    <div class="stat"><div class="label">To Review</div><div class="value" id="stat-review">0</div></div>
+  </div>
+
+  <div id="content"></div>
+
+  <div class="reset-section">
+    <button onclick="resetAll()">重置所有學習記錄</button>
+  </div>
+</div>
+
+<div id="toast-host"></div>
+
+<script>
+  // ===== Question Bank =====
+  const QUESTIONS = [
+    // ----- 文法 GRAMMAR -----
+    {
+      id: 'g1', type: 'grammar', tag: '文法',
+      question: '今日は雨なので、出かける（　）ない。',
+      translate: '今天下雨，所以不___出門。',
+      options: ['しか', 'ほど', 'ことは', 'ところで'],
+      answer: 2,
+      explain: '「〜ことはない」表示「沒必要、不需要」。「出かけることはない」＝沒必要出門。',
+      wrongs: {
+        0: '「しか」要搭配ない＝只有，但前面要接名詞或動詞辞書形（しか〜ない）但意思變成「只有出門」，不合語境。',
+        1: '「ほど」是程度比較，例：泣くほど悲しい。語法不通。',
+        3: '「ところで」表示「即使...也」，後面通常接負面結果，不合此句語境。'
+      }
+    },
+    {
+      id: 'g2', type: 'grammar', tag: '文法',
+      question: '先生に質問された（　）、答えられなくて恥ずかしかった。',
+      translate: '被老師問問題時，答不出來覺得很丟臉。',
+      options: ['ものの', 'ところに', 'ものを', 'とおりに'],
+      answer: 1,
+      explain: '「〜たところに/ところで/ところを」表示「正當...的時候」。「質問されたところに」＝被問的時候。N3 重要句型「動詞た形＋ところ」。',
+      wrongs: {
+        0: '「ものの」＝雖然但是（逆接），後句應是相反結果，這裡是順接情境。',
+        2: '「ものを」表示遺憾或責備「明明可以...卻」，需要前提條件。',
+        3: '「とおりに」＝按照...，例：先生の言うとおりに，語法不通。'
+      }
+    },
+    {
+      id: 'g3', type: 'grammar', tag: '文法',
+      question: 'この本は難しい（　）、とても面白いです。',
+      translate: '這本書雖然難，但很有趣。',
+      options: ['ながら', 'うえに', 'ばかりか', 'ことに'],
+      answer: 0,
+      explain: '「〜ながら（も）」表示逆接「雖然...但是」。可接い形容詞辞書形。「難しいながら（も）、面白い」。',
+      wrongs: {
+        1: '「うえに」＝而且、再加上（順接添加），會變成「又難又有趣」邏輯不通。',
+        2: '「ばかりか」＝不僅...而且（順接添加），同上不合語境。',
+        3: '「ことに」＝令人...的是，要接情感形容詞（驚いたことに），語法不通。'
+      }
+    },
+    {
+      id: 'g4', type: 'grammar', tag: '文法',
+      question: '彼は日本に住んでいる（　）、日本語が話せない。',
+      translate: '他雖然住在日本，卻不會說日語。',
+      options: ['ために', 'にもかかわらず', 'おかげで', 'によって'],
+      answer: 1,
+      explain: '「〜にもかかわらず」＝儘管、雖然，表示意外的逆接。住在日本卻不會日語＝出乎意料。',
+      wrongs: {
+        0: '「ために」＝因為（原因），會變成「因為住日本所以不會日語」邏輯錯誤。',
+        2: '「おかげで」＝託福、多虧（正面結果），不會日語不是正面結果。',
+        3: '「によって」＝根據、由於，這裡語意不合，不會日語不是「由住在日本造成」。'
+      }
+    },
+    {
+      id: 'g5', type: 'grammar', tag: '文法',
+      question: 'パソコンの調子が悪い。修理に出す（　）。',
+      translate: '電腦狀況不好。___送修。',
+      options: ['しかない', 'ものだ', 'ことだ', 'はずだ'],
+      answer: 0,
+      explain: '「〜しかない」＝只能...、別無他法。電腦壞了只能送修，是 N3 常考表達。',
+      wrongs: {
+        1: '「ものだ」＝（道理上）本來就是，用於常識性陳述，語意不合。',
+        2: '「ことだ」＝應該要...（建議），可以但語感較硬，不如「しかない」貼切表達無奈。',
+        3: '「はずだ」＝應該會...（推測），語意不合。'
+      }
+    },
+    {
+      id: 'g6', type: 'grammar', tag: '文法',
+      question: '田中さんは来る（　）来ないか、まだわからない。',
+      translate: '田中是要來還是不來，還不知道。',
+      options: ['か', 'と', 'の', 'は'],
+      answer: 0,
+      explain: '「〜か〜ないか」＝是否...，是固定句型。「来るか来ないか」＝來不來。',
+      wrongs: {
+        1: '「と」是引用或條件，不能用於是否選擇。',
+        2: '「の」是名詞化，這裡語法不通。',
+        3: '「は」是主題助詞，「来るは来ないか」不成立。'
+      }
+    },
+    {
+      id: 'g7', type: 'grammar', tag: '文法',
+      question: '電車が遅れた（　）、会議に遅刻してしまった。',
+      translate: '由於電車誤點，會議遲到了。',
+      options: ['せいで', 'おかげで', 'ばかりに', 'うえに'],
+      answer: 0,
+      explain: '「〜せいで」＝因為...（負面結果，含責備）。遲到是負面結果，使用「せいで」最自然。',
+      wrongs: {
+        1: '「おかげで」用於正面結果（多虧），遲到不是好事。',
+        2: '「ばかりに」也表示「就因為...」造成負面結果，文法正確但語感更強烈、後悔意味更重，較少用於這種日常情境（不算錯，但「せいで」更標準）。',
+        3: '「うえに」＝而且、再加上，不是因果關係。'
+      }
+    },
+    {
+      id: 'g8', type: 'grammar', tag: '文法',
+      question: '今度の試験に合格できる（　）、毎日勉強している。',
+      translate: '為了能通過這次考試，每天都在用功。',
+      options: ['ために', 'ように', 'のに', 'から'],
+      answer: 1,
+      explain: '目的句中，前句是「可能形/自動詞/否定」時用「ように」。「合格できる（可能形）ように」＝為了能合格。',
+      wrongs: {
+        0: '「ために」也表目的，但前面要接「意志動詞辞書形」如「合格するために」，不能直接接可能形「できる」。',
+        2: '「のに」＝雖然...卻（逆接），語意不合。',
+        3: '「から」＝因為（原因），不是目的。'
+      }
+    },
+    {
+      id: 'g9', type: 'grammar', tag: '文法',
+      question: 'この問題は私（　）難しすぎる。',
+      translate: '這個問題對我來說太難了。',
+      options: ['にとって', 'について', 'に対して', 'によって'],
+      answer: 0,
+      explain: '「〜にとって」＝對...來說（站在某人的立場、感受）。表達主觀判斷時用這個。',
+      wrongs: {
+        1: '「について」＝關於...，用於話題對象。',
+        2: '「に対して」＝對於...（針對某對象的態度/行為），如「先生に対して失礼」。',
+        3: '「によって」＝由於、根據、因...而異，語意不合。'
+      }
+    },
+    {
+      id: 'g10', type: 'grammar', tag: '文法',
+      question: '彼は学生（　）、よく勉強する。',
+      translate: '他不愧是學生，很用功讀書。',
+      options: ['らしく', 'みたいに', 'のように', 'っぽく'],
+      answer: 0,
+      explain: '「〜らしい」表示「具有...典型特質、像個樣子」。「学生らしい」＝有學生樣、像個學生該有的樣子。',
+      wrongs: {
+        1: '「みたいに」＝像...一樣（比喻、其實不是），會變「像學生一樣（但不是）」。',
+        2: '「のように」同上，是比喻，不是真的具備該身份特質。',
+        3: '「っぽい」＝有...感覺、傾向（口語），但偏感覺、印象，不如「らしい」貼切。'
+      }
+    },
+
+    // ----- 語彙 VOCAB -----
+    {
+      id: 'v1', type: 'vocab', tag: '語彙',
+      question: '約束の時間を（　）、すみませんでした。',
+      translate: '___了約定時間，真抱歉。',
+      options: ['まちがえて', 'おくれて', 'やぶって', 'のがして'],
+      answer: 2,
+      explain: '「約束を破る（やぶる）」＝違反/打破約定，是固定搭配。',
+      wrongs: {
+        0: '「まちがえる」＝弄錯，「時間を間違える」也通，但語意是「弄錯時間」非「違約」。原文重點是「對不起」＝違約。',
+        1: '「おくれる」＝遲到，「時間に遅れる」是「に」非「を」，助詞不符。',
+        3: '「のがす」＝錯過（機會、電車），不能搭配「約束」。'
+      }
+    },
+    {
+      id: 'v2', type: 'vocab', tag: '語彙',
+      question: '彼の話は信じ（　）。',
+      translate: '他的話難以相信。',
+      options: ['にくい', 'やすい', 'すぎる', 'がたい'],
+      answer: 3,
+      explain: '「〜がたい」＝難以（書面語、語感強烈）。「信じがたい」是固定搭配，意為「難以置信」。',
+      wrongs: {
+        0: '「にくい」也是「難以」，但「信じにくい」較口語，且 N3 此題情境通常考「信じがたい」這個慣用搭配。',
+        1: '「やすい」＝容易，語意相反。',
+        2: '「すぎる」＝過於，「信じすぎる」＝太過相信，語意不合。'
+      }
+    },
+    {
+      id: 'v3', type: 'vocab', tag: '語彙',
+      question: 'この道は車の通りが（　）、危ない。',
+      translate: '這條路車流量很___，很危險。',
+      options: ['ひどくて', 'はげしくて', 'つよくて', 'きびしくて'],
+      answer: 1,
+      explain: '「激しい（はげしい）」＝激烈、頻繁。「車の通りが激しい」＝車流頻繁，是固定搭配。',
+      wrongs: {
+        0: '「ひどい」＝糟糕、過分，不形容車流量。',
+        2: '「強い」＝強，形容力量、風雨，不形容車流。',
+        3: '「厳しい」＝嚴格、嚴峻，不形容車流。'
+      }
+    },
+    {
+      id: 'v4', type: 'vocab', tag: '語彙',
+      question: '雨が降っているので、傘を（　）行きなさい。',
+      translate: '正在下雨，___傘去吧。',
+      options: ['もって', 'つけて', 'はいて', 'かけて'],
+      answer: 0,
+      explain: '「傘を持つ（もつ）」＝拿傘、帶傘。日語中「攜帶」用「持つ」。',
+      wrongs: {
+        1: '「つける」＝裝上、打開（電器），不用於傘。',
+        2: '「はく」＝穿（鞋、褲子），不用於傘。',
+        3: '「かける」＝掛、戴（眼鏡），不用於傘的攜帶（「傘をさす」才是「撐傘」）。'
+      }
+    },
+    {
+      id: 'v5', type: 'vocab', tag: '語彙',
+      question: '事故の（　）で、電車が止まっています。',
+      translate: '因為事故的___，電車停駛中。',
+      options: ['げんいん', 'りゆう', 'えいきょう', 'けっか'],
+      answer: 2,
+      explain: '「影響（えいきょう）」＝影響。「事故の影響で」＝由於事故的影響，是新聞常用表達。',
+      wrongs: {
+        0: '「原因（げんいん）」＝原因，「事故の原因」是「事故的起因」非「事故造成的後果」，語意方向相反。',
+        1: '「理由（りゆう）」＝理由，多用於人為解釋，不用於事故造成的客觀影響。',
+        3: '「結果（けっか）」＝結果，「事故の結果で」不自然，通常說「事故の結果として」。'
+      }
+    },
+    {
+      id: 'v6', type: 'vocab', tag: '語彙',
+      question: '彼女は性格が（　）、みんなに好かれている。',
+      translate: '她個性___，受到大家喜愛。',
+      options: ['あかるくて', 'うすくて', 'かたくて', 'にがくて'],
+      answer: 0,
+      explain: '「明るい（あかるい）」＝開朗、明亮。「性格が明るい」＝個性開朗，是常用搭配。',
+      wrongs: {
+        1: '「薄い（うすい）」＝薄、淡，不形容性格（「性格が薄い」不通）。',
+        2: '「硬い（かたい）」＝硬、生硬，可形容「頭が固い（頑固）」但不是「性格が硬い」的正面意思。',
+        3: '「苦い（にがい）」＝苦（味道），不形容性格。'
+      }
+    },
+    {
+      id: 'v7', type: 'vocab', tag: '語彙',
+      question: 'このスマホは新しい（　）、すぐ壊れてしまった。',
+      translate: '這支手機是新的，___馬上就壞了。',
+      options: ['くせに', 'おかげで', 'うえに', 'からこそ'],
+      answer: 0,
+      explain: '「〜くせに」＝明明...卻（含不滿、責備語氣）。「新しいくせに壊れた」＝明明是新的卻壞了。',
+      wrongs: {
+        1: '「おかげで」＝多虧（正面），壞了不是好事。',
+        2: '「うえに」＝而且（添加），語意不通。',
+        3: '「からこそ」＝正因為（強調原因，正面強調），不合此處抱怨語氣。'
+      }
+    },
+    {
+      id: 'v8', type: 'vocab', tag: '語彙',
+      question: '最近、仕事が忙しくて（　）が足りない。',
+      translate: '最近工作忙，___不夠。',
+      options: ['すいみん', 'けしき', 'きおく', 'よてい'],
+      answer: 0,
+      explain: '「睡眠（すいみん）」＝睡眠。「睡眠が足りない」＝睡眠不足，是常見搭配。',
+      wrongs: {
+        1: '「景色（けしき）」＝風景，不能說「景色不足」。',
+        2: '「記憶（きおく）」＝記憶，不符合「忙到不夠」的語境。',
+        3: '「予定（よてい）」＝預定行程，「予定が足りない」不自然。'
+      }
+    },
+
+    // ----- 讀解 READING -----
+    {
+      id: 'r1', type: 'reading', tag: '讀解',
+      question: '「お先に失礼します」は、どんな場面で使う言葉ですか。',
+      translate: '「お先に失礼します」是在什麼場面使用的話？',
+      options: [
+        '初めて人に会うとき',
+        '会社などで自分が先に帰るとき',
+        '食事を始めるとき',
+        '人に物をもらうとき'
+      ],
+      answer: 1,
+      explain: '「お先に失礼します」直譯為「我先告辭了」，是日本職場文化中下班、先離開時對留下的人說的標準用語。',
+      wrongs: {
+        0: '初次見面用「はじめまして」。',
+        2: '開始用餐用「いただきます」。',
+        3: '收到東西用「ありがとうございます」。'
+      }
+    },
+    {
+      id: 'r2', type: 'reading', tag: '讀解',
+      question: '「彼は口が堅い」とは、どういう意味ですか。',
+      translate: '「彼は口が堅い」是什麼意思？',
+      options: [
+        'よく食べる人だ',
+        '秘密を守る人だ',
+        '怒りやすい人だ',
+        '話が下手な人だ'
+      ],
+      answer: 1,
+      explain: '「口が堅い（くちがかたい）」是慣用句，意為「嘴巴緊、會守秘密」。「堅」表示嘴巴緊閉不漏訊息。',
+      wrongs: {
+        0: '吃很多是「よく食べる」「食いしん坊」，與「口が堅い」無關。',
+        2: '易怒是「怒りっぽい」「短気」。',
+        3: '不擅言詞是「口下手（くちべた）」，注意這是不同的慣用語。'
+      }
+    },
+    {
+      id: 'r3', type: 'reading', tag: '讀解',
+      question: 'A：「明日の会議、何時からでしたっけ？」 B：「（　　）」 もっとも自然な返事は？',
+      translate: 'A：「明天的會議是幾點開始來著？」 B：「（　）」 最自然的回答是？',
+      options: [
+        '三時からですよ。',
+        '三時からですか。',
+        '三時からでしたか。',
+        '三時からでしょうか。'
+      ],
+      answer: 0,
+      explain: '「〜でしたっけ」是向對方確認自己模糊記憶的表達。對方應該直接告知答案，用「〜ですよ」自然地提供資訊。',
+      wrongs: {
+        1: '「ですか」是反問，會變成 B 也在問 A，對話不通。',
+        2: '「でしたか」過去式不合理，會議還沒開始。',
+        3: '「でしょうか」是不確定的推測，B 既然回答就應該確定。'
+      }
+    }
+  ];
+
+  // ===== State =====
+  let state = {
+    history: {}, // { qid: { attempts: [...], lastWrong: bool, wrongCount: n } }
+    currentView: 'practice',
+    currentQ: null,
+    selectedOption: null,
+    answered: false,
+    reviewFilter: 'all',
+    practicePool: null // for review-mode practice
+  };
+
+  // ===== Storage =====
+  async function loadState() {
+    try {
+      const r = await window.storage.get('n3_state');
+      if (r && r.value) {
+        const saved = JSON.parse(r.value);
+        state.history = saved.history || {};
+      }
+    } catch (e) {
+      // first time, ignore
+    }
+  }
+
+  async function saveState() {
+    try {
+      await window.storage.set('n3_state', JSON.stringify({ history: state.history }));
+    } catch (e) {
+      console.error('save failed', e);
+    }
+  }
+
+  // ===== Question selection =====
+  function pickQuestion() {
+    if (state.practicePool && state.practicePool.length > 0) {
+      const q = state.practicePool.shift();
+      return q;
+    }
+    // Weighted random: prioritise unattempted & wrong ones
+    const weighted = QUESTIONS.map(q => {
+      const h = state.history[q.id];
+      let weight = 1;
+      if (!h || !h.attempts.length) weight = 3; // unattempted: higher chance
+      else if (h.lastWrong) weight = 4; // recently wrong: highest
+      else weight = 1;
+      // avoid showing same question twice in a row
+      if (state.currentQ && state.currentQ.id === q.id) weight = 0.1;
+      return { q, weight };
+    });
+    const total = weighted.reduce((s, w) => s + w.weight, 0);
+    let r = Math.random() * total;
+    for (const w of weighted) {
+      r -= w.weight;
+      if (r <= 0) return w.q;
+    }
+    return weighted[0].q;
+  }
+
+  // ===== Rendering =====
+  function updateStats() {
+    let total = 0, correct = 0, toReview = 0;
+    for (const qid in state.history) {
+      const h = state.history[qid];
+      total += h.attempts.length;
+      correct += h.attempts.filter(a => a).length;
+      if (h.lastWrong) toReview++;
+    }
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-correct').textContent = correct;
+    const acc = total > 0 ? Math.round((correct / total) * 100) : '—';
+    document.getElementById('stat-acc').innerHTML = total > 0 ? acc + '<span class="small">%</span>' : '—';
+    document.getElementById('stat-review').textContent = toReview;
+  }
+
+  function renderPractice() {
+    if (!state.currentQ) state.currentQ = pickQuestion();
+    const q = state.currentQ;
+    const h = state.history[q.id];
+    const attemptedCount = h ? h.attempts.length : 0;
+
+    const optionsHtml = q.options.map((opt, i) => {
+      let cls = 'option';
+      if (state.answered) {
+        if (i === q.answer) cls += ' correct';
+        else if (i === state.selectedOption) cls += ' wrong';
+      }
+      const num = ['①', '②', '③', '④'][i];
+      return `<button class="${cls}" ${state.answered ? 'disabled' : ''} onclick="selectOption(${i})">
+        <span class="num">${num}</span><span>${opt}</span>
+      </button>`;
+    }).join('');
+
+    let explainHtml = '';
+    if (state.answered) {
+      const isRight = state.selectedOption === q.answer;
+      const wrongChoice = !isRight ? q.wrongs[state.selectedOption] : null;
+      explainHtml = `
+        <div class="explain ${isRight ? 'right' : 'wrong'}">
+          <h3>${isRight ? 'CORRECT · 正解' : 'INCORRECT · 不正解'}</h3>
+          <p><strong>正解：${['①','②','③','④'][q.answer]} ${q.options[q.answer]}</strong></p>
+          <p>${q.explain}</p>
+          ${!isRight ? `
+            <div class="wrong-list">
+              <div class="item"><strong>你選的 ${['①','②','③','④'][state.selectedOption]}：</strong>${wrongChoice}</div>
+            </div>
+          ` : ''}
+          <div class="wrong-list">
+            ${Object.entries(q.wrongs).filter(([k]) => parseInt(k) !== state.selectedOption || isRight).map(([k, v]) =>
+              `<div class="item"><strong>${['①','②','③','④'][parseInt(k)]}：</strong>${v}</div>`
+            ).join('')}
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="nextQuestion()">下一題 →</button>
+        </div>
+      `;
+    } else {
+      explainHtml = `
+        <div class="actions">
+          <button class="btn ghost" onclick="skipQuestion()">跳過</button>
+        </div>
+      `;
+    }
+
+    document.getElementById('content').innerHTML = `
+      <div class="card">
+        <div class="q-meta">
+          <span class="q-number">Question · 第 ${Object.keys(state.history).length + (h ? 0 : 1)} 題練習</span>
+          <span class="q-tag ${q.type}">${q.tag}</span>
+        </div>
+        <div class="q-text">${q.question.replace('（　）', '<span class="blank">？</span>')}</div>
+        <div class="q-translate">${q.translate}</div>
+        <div class="options">${optionsHtml}</div>
+        ${explainHtml}
+      </div>
+    `;
+  }
+
+  function renderReview() {
+    const wrongItems = QUESTIONS.filter(q => {
+      const h = state.history[q.id];
+      if (!h) return false;
+      if (state.reviewFilter === 'all') return h.attempts.length > 0;
+      if (state.reviewFilter === 'wrong') return h.lastWrong;
+      if (state.reviewFilter === 'right') return !h.lastWrong && h.attempts.length > 0;
+      return h.attempts.length > 0;
+    });
+
+    const filterBar = `
+      <div class="filter-bar">
+        <button class="${state.reviewFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">全部</button>
+        <button class="${state.reviewFilter === 'wrong' ? 'active' : ''}" onclick="setFilter('wrong')">最近答錯</button>
+        <button class="${state.reviewFilter === 'right' ? 'active' : ''}" onclick="setFilter('right')">已答對</button>
+      </div>
+    `;
+
+    if (wrongItems.length === 0) {
+      document.getElementById('content').innerHTML = filterBar + `
+        <div class="review-empty">
+          <div class="big">空</div>
+          <div>${state.reviewFilter === 'wrong' ? '目前沒有需要複習的題目' : '尚無練習記錄，去做題目吧'}</div>
+        </div>
+      `;
+      return;
+    }
+
+    // Add "practice all wrong" button if filter is wrong
+    const wrongPracticeBtn = state.reviewFilter === 'wrong' && wrongItems.length > 0 ? `
+      <div style="margin-bottom: 16px; text-align: right;">
+        <button class="btn" onclick="practiceWrong()">集中練習錯題 →</button>
+      </div>
+    ` : '';
+
+    const listHtml = wrongItems.map(q => {
+      const h = state.history[q.id];
+      const wrongCount = h.attempts.filter(a => !a).length;
+      const lastAttempt = h.attempts[h.attempts.length - 1];
+      return `
+        <div class="review-item">
+          <div class="top">
+            <div class="q">
+              <span class="q-tag ${q.type}" style="margin-right:8px;font-size:10px;padding:2px 8px;">${q.tag}</span>
+              ${q.question}
+            </div>
+            ${wrongCount > 0 ? `<span class="count">錯 ${wrongCount} 次</span>` : ''}
+          </div>
+          <div class="ans">
+            ${lastAttempt ? '<span class="y">✓ 上次答對</span>' : '<span class="n">✗ 上次答錯</span>'}
+            　|　 正解：<strong>${q.options[q.answer]}</strong>
+            <br><span style="margin-top:6px;display:inline-block;">${q.explain}</span>
+          </div>
+          <button class="practice-btn" onclick="practiceOne('${q.id}')">再練一次</button>
+        </div>
+      `;
+    }).join('');
+
+    document.getElementById('content').innerHTML = filterBar + wrongPracticeBtn + `<div class="review-list">${listHtml}</div>`;
+  }
+
+  function render() {
+    updateStats();
+    if (state.currentView === 'practice') renderPractice();
+    else renderReview();
+  }
+
+  // ===== Actions =====
+  window.selectOption = function(i) {
+    if (state.answered) return;
+    state.selectedOption = i;
+    state.answered = true;
+    const q = state.currentQ;
+    const correct = i === q.answer;
+    if (!state.history[q.id]) state.history[q.id] = { attempts: [], lastWrong: false, wrongCount: 0 };
+    state.history[q.id].attempts.push(correct);
+    state.history[q.id].lastWrong = !correct;
+    if (!correct) state.history[q.id].wrongCount = (state.history[q.id].wrongCount || 0) + 1;
+    saveState();
+    render();
+  };
+
+  window.nextQuestion = function() {
+    state.currentQ = pickQuestion();
+    state.selectedOption = null;
+    state.answered = false;
+    render();
+  };
+
+  window.skipQuestion = function() {
+    nextQuestion();
+  };
+
+  window.switchView = function(view) {
+    state.currentView = view;
+    document.getElementById('nav-practice').classList.toggle('active', view === 'practice');
+    document.getElementById('nav-review').classList.toggle('active', view === 'review');
+    render();
+  };
+
+  window.setFilter = function(f) {
+    state.reviewFilter = f;
+    render();
+  };
+
+  window.practiceOne = function(qid) {
+    const q = QUESTIONS.find(x => x.id === qid);
+    if (!q) return;
+    state.practicePool = [q];
+    state.currentQ = q;
+    state.selectedOption = null;
+    state.answered = false;
+    switchView('practice');
+    showToast('開始練習此題');
+  };
+
+  window.practiceWrong = function() {
+    const wrongs = QUESTIONS.filter(q => state.history[q.id] && state.history[q.id].lastWrong);
+    if (wrongs.length === 0) return;
+    state.practicePool = [...wrongs].sort(() => Math.random() - 0.5);
+    state.currentQ = state.practicePool.shift();
+    state.selectedOption = null;
+    state.answered = false;
+    switchView('practice');
+    showToast(`開始集中練習 ${wrongs.length} 題錯題`);
+  };
+
+  window.resetAll = async function() {
+    if (!confirm('確定要重置所有學習記錄嗎？此動作無法復原。')) return;
+    state.history = {};
+    state.currentQ = null;
+    state.selectedOption = null;
+    state.answered = false;
+    state.practicePool = null;
+    await saveState();
+    render();
+    showToast('已重置所有記錄');
+  };
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.getElementById('toast-host').appendChild(t);
+    setTimeout(() => t.remove(), 2200);
+  }
+
+  // ===== Init =====
+  (async function init() {
+    document.getElementById('content').innerHTML = '<div class="loading">読み込み中...</div>';
+    await loadState();
+    render();
+  })();
+</script>
